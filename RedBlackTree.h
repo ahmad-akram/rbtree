@@ -21,7 +21,7 @@ void RBT::PREORDER(Node* p)
 {
 	if (p!=nullptr)
 	{
-		cout << p->data << " ";
+		cout << p->data << ":" <<p->color<<" ";
 		PREORDER(p->left);
 		PREORDER(p->right);
 		
@@ -34,7 +34,7 @@ void RBT::POSTORDER(Node* p)
 	{
 		POSTORDER(p->left);
 		POSTORDER(p->right);
-		cout << p->data << " ";
+		cout << p->data << ":"<<p->color<<" ";
 	}
 }
 
@@ -43,7 +43,7 @@ void RBT::INORDER(Node* p)
 	if (p!=nullptr)
 	{
 		INORDER(p->left);
-		cout << p->data << " ";
+		cout << p->data << ":"<<p->color<<" ";
 		INORDER(p->right);
 	}
 }
@@ -94,42 +94,81 @@ void RBT::insert(int value)
 	}
 	
 	else
-	{
+	{	
+		Node* g=root;
 		Node*p=root;
-		Node*t = root;
+		Node*c = root;
 		
 		while(1)
 		{
-			if (value<t->data)	//left child case
+			if (value<c->data)	//left child case
 			{
-				if (t->left==nullptr)	//insert the value 
+				if (c->left==nullptr)	//insert the value 
 				{
-					t->left = n;
+					c->left = n;
+					g=p;
+					p=c;
+					c=c->left;
+					// cout<<"G:"<<g->data<<" ";
+					// cout<<"P:"<<p->data<<" ";
+					// cout<<"C:"<<c->data<<" ";
+					// cout<<endl;
 					break;
 				}
 				
 				else
 				{
-					t = t->left;
+					g=p;
+					p=c;
+					c = c->left;
+					
 				}
 			}
 			
 			else				//right child case
 			{
-				if (t->right == nullptr)	//insert value
+				if (c->right == nullptr)	//insert value
 				{
-					t->right = n;
+
+					c->right = n;
+					g=p;
+					p=c;
+					c=c->right;
+					// cout<<"G:"<<g->data<<" ";
+					// cout<<"P:"<<p->data<<" ";
+					// cout<<"C:"<<c->data<<" ";
+					// cout<<endl;
 					break;
 				}
 				
 				else
 				{
-					t=t->right;
+					g=p;
+					p=c;
+					c=c->right;
 				}
 				
 			}
 				
 		}
+		if(p->color=='R'){
+			Node* u;
+			if(g->data>p->data)
+				u=g->right;
+			else u=g->left;			
+			if(u ==nullptr || u->color=='B' ){
+				
+			}
+			else{
+				u->color='B';
+				p->color='B';
+				g->color='R';
+				if(root->color=='R')
+					root->color='B';
+			}
+				
+		}
+
 	}
 	
 }
