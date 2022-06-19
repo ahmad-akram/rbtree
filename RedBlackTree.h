@@ -3,9 +3,12 @@
 class RBT
 {
 	Node *root;
-	void INORDER(Node *p);
-	void POSTORDER(Node *p);
-	void PREORDER(Node *p);
+	void NLR(Node *p);
+	void LNR(Node *p);
+	void LRN(Node *p);
+	void NRL(Node *p);
+	void RNL(Node *p);
+	void RLN(Node *p);
 
 public:
 	RBT()
@@ -13,67 +16,144 @@ public:
 		root = nullptr;
 	}
 	void insert(int value);
-	void inorder();
-	void postorder();
-	void preorder();
+	void nlr();
+	void lnr();
+	void lrn();
+	void nrl();
+	void rnl();
+	void rln();
 };
-
-void RBT::PREORDER(Node *p)
+void RBT::NLR(Node *p)
 {
 	if (p != nullptr)
 	{
 		cout << p->data << ":" << p->color << " ";
-		PREORDER(p->left);
-		PREORDER(p->right);
+		NLR(p->left);
+		NLR(p->right);
 	}
 }
 
-void RBT::POSTORDER(Node *p)
+void RBT::LNR(Node *p)
 {
 	if (p != nullptr)
 	{
-		POSTORDER(p->left);
-		POSTORDER(p->right);
+		NLR(p->left);
 		cout << p->data << ":" << p->color << " ";
+		NLR(p->right);
 	}
 }
 
-void RBT::INORDER(Node *p)
+void RBT::LRN(Node *p)
 {
 	if (p != nullptr)
 	{
-		INORDER(p->left);
+		LRN(p->left);
+		LRN(p->right);
 		cout << p->data << ":2" << p->color << " ";
-		INORDER(p->right);
+	}
+}
+void RBT::NRL(Node *p)
+{
+	if (p != nullptr)
+	{
+		cout << p->data << ":" << p->color << " ";
+		NRL(p->right);
+		NRL(p->left);
 	}
 }
 
-void RBT::preorder()
+void RBT::RNL(Node *p)
+{
+	if (p != nullptr)
+	{
+		RNL(p->right);
+		cout << p->data << ":" << p->color << " ";
+		RNL(p->left);
+	}
+}
+
+void RBT::RLN(Node *p)
+{
+	if (p != nullptr)
+	{
+		RLN(p->right);
+		RLN(p->left);
+		cout << p->data << ":2" << p->color << " ";
+	}
+}
+
+void RBT::nlr()
 {
 	if (root == nullptr)
 		cout << "Tree is empty" << endl;
 
 	else
-		PREORDER(root);
+		NLR(root);
 }
 
-void RBT::postorder()
+void RBT::lnr()
 {
 	if (root == nullptr)
 		cout << "Tree is empty" << endl;
 
 	else
-		POSTORDER(root);
+		LNR(root);
 }
 
-void RBT::inorder()
+void RBT::lrn()
 {
 	if (root == nullptr)
 		cout << "Tree is empty" << endl;
 
 	else
-		INORDER(root);
+		LRN(root);
 }
+void RBT::nrl()
+{
+	if (root == nullptr)
+		cout << "Tree is empty" << endl;
+
+	else
+		NRL(root);
+}
+
+void RBT::rnl()
+{
+	if (root == nullptr)
+		cout << "Tree is empty" << endl;
+
+	else
+		RNL(root);
+}
+
+void RBT::rln()
+{
+	if (root == nullptr)
+		cout << "Tree is empty" << endl;
+
+	else
+		RLN(root);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void RBT::insert(int value)
 {
@@ -92,6 +172,7 @@ void RBT::insert(int value)
 
 	else
 	{
+		Node *gg = root;
 		Node *g = root;
 		Node *p = root;
 		Node *c = root;
@@ -103,18 +184,21 @@ void RBT::insert(int value)
 				if (c->left == nullptr) // insert the value
 				{
 					c->left = n;
+					gg = g;
 					g = p;
 					p = c;
 					c = c->left;
-					// cout<<"G:"<<g->data<<" ";
-					// cout<<"P:"<<p->data<<" ";
-					// cout<<"C:"<<c->data<<" ";
-					// cout<<endl;
+					//cout<<"GG:"<<gg->data<<" ";
+					//cout<<"G:"<<g->data<<" ";
+					//cout<<"P:"<<p->data<<" ";
+					//cout<<"C:"<<c->data<<" ";
+					//cout<<endl;
 					break;
 				}
 
 				else
 				{
+					gg = g;
 					g = p;
 					p = c;
 					c = c->left;
@@ -127,9 +211,11 @@ void RBT::insert(int value)
 				{
 
 					c->right = n;
+					gg=g;
 					g = p;
 					p = c;
 					c = c->right;
+					// cout<<"GG:"<<gg->data<<" ";
 					// cout<<"G:"<<g->data<<" ";
 					// cout<<"P:"<<p->data<<" ";
 					// cout<<"C:"<<c->data<<" ";
@@ -139,43 +225,74 @@ void RBT::insert(int value)
 
 				else
 				{
+					gg=g;
 					g = p;
 					p = c;
 					c = c->right;
 				}
 			}
 		}
-		if (p->color == 'R')//if parent is red
+		if (p->color == 'R') // if parent is red
 		{
 			Node *u;
 			if (g->data > p->data)
 				u = g->right;
 			else
 				u = g->left;
-			if (u == nullptr || u->color == 'B')//if uncle is black
+			if (u == nullptr || u->color == 'B') // if uncle is black
 			{
-				if (c->data > p->data && p->data < g->data ) //N is added to right of left child of grandparent
+				if (c->data > p->data && p->data < g->data) // N is added to right of left child of grandparent
 				{
-					g->left=c;
-					c->left=p;
-					p->right=nullptr;
-					c=p;
-					p=g->left;
+					g->left = c;
+					c->left = p;
+					p->right = nullptr;
+					c = p;
+					p = g->left;
 				}
-				else if(c->data < p->data && p->data > g->data) //N is added to left of right child of grandparent
+				if (c->data < p->data && p->data > g->data) // N is added to left of right child of grandparent
 				{
-					g->right=c;				
-					c->right=p;
-					p->left=nullptr;
-					c=p;
-					p=g->right;
+					g->right = c;
+					c->right = p;
+					p->left = nullptr;
+					c = p;
+					p = g->right;
 				}
-				if(c->data<p->data && p->data<g->data){
-					
-				}
+				if (c->data < p->data && p->data < g->data)
+				{
+					if(gg==root){
+						Node* t=p->right;
+						root=p;
+						p->right=g;
+						g->left=t;
+					}
+					else{
+						if(gg->data>g->data){
 
+						}
+						else{
+
+						}
+					}
+				}
+				if (c->data > p->data && p->data > g->data)
+				{
+					if(gg==root){
+						Node* t=p->left;
+						root=p;
+						p->left=g;
+						g->right=t;
+					}
+					else{
+						if(gg->data>g->data){
+
+						}
+						else{
+
+						}
+					}
+				}
 			}
-			else //if uncle is red
+			else // if uncle is red
 			{
 				u->color = 'B';
 				p->color = 'B';
